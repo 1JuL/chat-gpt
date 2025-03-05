@@ -17,7 +17,8 @@ export default function Home() {
     >
       <Button title="Dashboard" onPress={() => router.push("/dashboard")} />
       <Button title="Welcome" onPress={() => router.push("/welcome")} />
-      <Button title="index" onPress={() => router.push("/")} />
+      <Button title="SplashScreen" onPress={() => router.push("/")} />
+      <Button title="Chat" onPress={() => router.push("/chat")} />
     </View>
   );
 }

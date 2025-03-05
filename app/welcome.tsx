@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import { View, Text, Image, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
+import styles from "../styles/WelcomeStyles";
 
 export default function Welcome() {
   const [loaded] = useFonts({
@@ -119,112 +120,3 @@ export default function Welcome() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#202123",
-    justifyContent: "space-between",
-  },
-  topSection: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    paddingTop: 0,
-  },
-  logo: {
-    width: 30,
-    height: 30,
-    marginBottom: 20,
-  },
-  title: {
-    color: "#fff",
-    fontSize: 32,
-    marginBottom: 10,
-    fontFamily: "RalewayBold",
-  },
-  subtitle: {
-    color: "#fff",
-    fontSize: 16,
-    fontFamily: "Raleway",
-  },
-  middleSection: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  examplesContainer: {
-    alignItems: "center",
-    width: "80%",
-    gap: 10,
-  },
-  examplesTitle: {
-    fontSize: 18,
-    fontFamily: "RalewayBold",
-    marginTop: 10,
-    marginBottom: 30,
-    color: "#fff",
-  },
-  exampleBox: {
-    backgroundColor: "rgba(255,255,255,0.08)",
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 10,
-    width: "100%",
-    height: 62,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  exampleText: {
-    color: "#fff",
-    fontSize: 16,
-    textAlign: "center",
-    fontFamily: "Raleway",
-  },
-  dialogContainer: {
-    width: "80%",
-    padding: 20,
-    borderRadius: 10,
-    backgroundColor: "#f2f2f2",
-    alignItems: "center",
-  },
-  dialogText: {
-    color: "#fff",
-    fontSize: 16,
-    textAlign: "center",
-    fontFamily: "Raleway",
-  },
-  indicatorContainer: {
-    flexDirection: "row",
-    marginTop: 10,
-  },
-  indicator: {
-    width: 28,
-    height: 4,
-    borderRadius: 12,
-    marginHorizontal: 5,
-  },
-  bottomSection: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  nextButton: {
-    width: 335,
-    height: 48,
-    borderRadius: 8,
-    paddingTop: 12,
-    paddingRight: 24,
-    paddingBottom: 12,
-    paddingLeft: 24,
-    backgroundColor: "#10A37F",
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  nextButtonText: {
-    color: "#fff",
-    fontSize: 18,
-    fontFamily: "Raleway",
-  },
-});
