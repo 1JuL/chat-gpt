@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
   TextInput,
   ScrollView,
-  StyleSheet,
   ActivityIndicator,
   TouchableOpacity,
 } from "react-native";
@@ -14,6 +13,18 @@ import Markdown from "react-native-markdown-display";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { APIResponse, Message } from "@/interfaces/AppInterfaces";
 import styles from "../styles/ChatStyles";
+import { db } from "../utils/firebase";
+import {
+  addDoc,
+  collection,
+  doc,
+  onSnapshot,
+  orderBy,
+  query,
+  serverTimestamp,
+  updateDoc,
+} from "firebase/firestore";
+import { createConversation } from "../utils/CreateConversation";
 
 export default function Chat() {
   const [loaded] = useFonts({
@@ -23,6 +34,7 @@ export default function Chat() {
   const [inputText, setInputText] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [conversationId, setConversationId] = useState<string | null>("RwIuYGIM3dCJsNRGnPEw");
 
   const API_KEY = process.env.EXPO_PUBLIC_API_KEY;
 
@@ -50,22 +62,53 @@ export default function Chat() {
     }
   };
 
-  // Función que se ejecuta al enviar el mensaje
+  // Cargar mensajes en tiempo real de la conversación actual
+  useEffect(() => {
+    if (!conversationId) return;
+    const messagesRef = collection(db, "conversations", conversationId, "messages");
+    const q = query(messagesRef, orderBy("timestamp", "asc"));
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const loadedMessages: Message[] = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          text: data.text || "",
+          sender_by: data.sender_by || "",
+          date: data.date && data.date.toDate ? data.date.toDate() : new Date(),
+          state: data.state || "Sent",
+        };
+      });
+      setMessages(loadedMessages);
+    });
+
+    return () => unsubscribe();
+  }, [conversationId]);
+
   const handleSend = async () => {
     if (!inputText.trim()) return;
 
-    // Agregar mensaje del usuario a la lista
+    // Si no existe una conversación, se crea una nueva
+    let currentConversationId = conversationId;
+    if (!currentConversationId) {
+      try {
+        currentConversationId = await createConversation();
+        setConversationId(currentConversationId);
+      } catch (error) {
+        return;
+      }
+    }
+
+    // Crear el objeto del mensaje del usuario
     const userMessage: Message = {
       text: inputText,
       sender_by: "User",
       date: new Date(),
       state: "Sent",
     };
-    setMessages((prev) => [...prev, userMessage]);
 
+    // Se agrega el mensaje en la interfaz de usuario
+    setMessages((prev) => [...prev, userMessage]);
     setInputText("");
 
-    // Obtener la respuesta del bot y agregarla a la lista
     const botText = await getResponse(inputText);
     const botMessage: Message = {
       text: botText,
@@ -73,7 +116,26 @@ export default function Chat() {
       date: new Date(),
       state: "Received",
     };
+
     setMessages((prev) => [...prev, botMessage]);
+
+    try {
+      await addDoc(collection(db, "conversations", currentConversationId, "messages"), {
+        ...userMessage,
+        timestamp: serverTimestamp(),
+      });
+
+      await addDoc(collection(db, "conversations", currentConversationId, "messages"), {
+        ...botMessage,
+        timestamp: serverTimestamp(),
+      });
+
+      await updateDoc(doc(db, "conversations", currentConversationId), {
+        lastUpdated: serverTimestamp(),
+      });
+    } catch (error) {
+      console.error("Error al guardar mensaje en Firestore:", error);
+    }
   };
 
   return (

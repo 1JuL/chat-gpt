@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { View, Text, Image, TouchableOpacity } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
+import { useRouter } from "expo-router";
 import styles from "../styles/WelcomeStyles";
 
 export default function Welcome() {
@@ -9,6 +10,8 @@ export default function Welcome() {
     Raleway: require("../assets/fonts/raleway.semibold.ttf"),
     RalewayBold: require("../assets/fonts/raleway.bold.ttf"),
   });
+
+  const router = useRouter();
 
   const exampleSets = [
     {
@@ -49,7 +52,7 @@ export default function Welcome() {
     if (currentExampleIndex < exampleSets.length - 1) {
       setCurrentExampleIndex(currentExampleIndex + 1);
     } else {
-      console.log("Let's Chat pressed!");
+      router.push("/dashboard");
     }
   };
 

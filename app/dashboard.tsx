@@ -1,10 +1,13 @@
 import { View, Text, ScrollView, TouchableOpacity, TouchableWithoutFeedback } from "react-native";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import React, { useState } from "react";
+import { useRouter } from "expo-router";
 import { useFonts } from "expo-font";
 import styles from "../styles/DashboardStyles";
 
 export default function Dashboard() {
+  const router = useRouter();
+
   const [loaded] = useFonts({
     Raleway: require("../assets/fonts/raleway.semibold.ttf"),
   });
@@ -26,7 +29,7 @@ export default function Dashboard() {
         <TouchableOpacity
           style={styles.newChatButton}
           onPress={() => {
-            /* acción para new chat */
+            router.push("/chat");
           }}
         >
           <View style={styles.leftGroup}>

@@ -1,3 +1,6 @@
+import { User } from "firebase/auth";
+import { ReactNode } from "react";
+
 export interface APIResponse {
     candidates:    Candidate[];
     usageMetadata: UsageMetadata;
@@ -45,7 +48,17 @@ export interface TokensDetail {
 
 export interface Message {
     text: string;
-    sender_by: "Bot" | "User";
+    sender_by: string;
     date: Date;
     state: "Sent" | "Received";
+}
+
+export interface AuthContextType {
+    user: User | null;
+    login: (email: string, password: string) => Promise<User>;
+    logout: () => Promise<void>;
+}
+
+export interface AuthProviderProps {
+    children: ReactNode;
 }
