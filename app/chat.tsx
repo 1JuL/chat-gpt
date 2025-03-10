@@ -65,6 +65,7 @@ export default function Chat() {
   // Cargar mensajes en tiempo real de la conversación actual
   useEffect(() => {
     if (!conversationId) return;
+    setIsLoading(true);
     const messagesRef = collection(db, "conversations", conversationId, "messages");
     const q = query(messagesRef, orderBy("timestamp", "asc"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -78,6 +79,7 @@ export default function Chat() {
         };
       });
       setMessages(loadedMessages);
+      setIsLoading(false);
     });
 
     return () => unsubscribe();

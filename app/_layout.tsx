@@ -1,6 +1,5 @@
 import { Stack } from "expo-router";
 import { Image } from "react-native";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
 
 export default function RootLayout() {
@@ -29,9 +28,12 @@ export default function RootLayout() {
     >
       <Stack.Screen name="home" options={{ headerShown: false }}></Stack.Screen>
       <Stack.Screen name="index" options={{ headerShown: false }}></Stack.Screen>
-      <Stack.Screen name="welcome" options={{ title: "Welcome" }}></Stack.Screen>
+      <Stack.Screen name="welcome" options={{ headerShown: false }}></Stack.Screen>
       <Stack.Screen name="dashboard" options={{ title: "Dashboard" }}></Stack.Screen>
       <Stack.Screen name="chat" options={{ title: "Back" }}></Stack.Screen>
+      <Stack.Screen name="login" options={{ title: "Login" }}></Stack.Screen>
+      <Stack.Screen name="signup" options={{ title: "Signup" }}></Stack.Screen>
+      <Stack.Screen name="navbuttons" options={{ title: "Navbuttons" }}></Stack.Screen>
     </Stack>
   );
 }
