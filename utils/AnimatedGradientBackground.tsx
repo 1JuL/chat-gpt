@@ -21,7 +21,7 @@ export default function AnimatedGradientBackground() {
     Animated.timing(fadeAnim, {
       toValue: 1,
       duration: 2500,
-      useNativeDriver: true,
+      useNativeDriver: false,
     }).start(() => {
       setCurrentIndex(nextIndex);
       setNextIndex((nextIndex + 1) % COLOR_PAIRS.length);
@@ -41,7 +41,7 @@ export default function AnimatedGradientBackground() {
         end={{ x: 1, y: 1 }}
       />
 
-      <Animated.View style={[StyleSheet.absoluteFill, { opacity: fadeAnim }]}>
+      <Animated.View style={[StyleSheet.absoluteFill, { opacity: 1 }]}>
         <LinearGradient
           colors={[nextColors[0], nextColors[1]]}
           style={StyleSheet.absoluteFill}

@@ -7,7 +7,7 @@ export default function Index() {
   const router = useRouter();
 
   const changeScreen = () => {
-    router.push("/home");
+    router.push("/navbuttons");
   };
 
   const [loaded] = useFonts({
