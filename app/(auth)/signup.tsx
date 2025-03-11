@@ -9,22 +9,59 @@ import {
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "expo-router";
 import AnimatedGradientBackground from "@/utils/AnimatedGradientBackground";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth } from "@/utils/firebase";
+import Toast from "react-native-toast-message";
 
 export default function Signup() {
-  //const { login } = useAuth();
+  const { login } = useAuth();
+  const [displayName, setDisplayName] = useState("");
   const [email, setEmail] = useState("");
+  const [confirmEmail, setConfirmEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const changeScreen = () => {
+    router.push("/welcome");
+  };
 
   const handleSignup = async () => {
+    if (email !== confirmEmail) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Los correos electrónicos no coinciden.",
+      });
+      return;
+    }
     setLoading(true);
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
-    } catch (error) {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(userCredential.user, { displayName });
+      await userCredential.user.reload();
+      Toast.show({
+        type: "success",
+        text1: "Registro exitoso",
+        text2: `Bienvenido ${displayName}!`,
+      });
+      try {
+        await login(email, password);
+      } catch (error) {
+        console.log({ error });
+      }
+      setTimeout(() => {
+        changeScreen();
+      }, 1500);
+    } catch (error: any) {
       console.log({ error });
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: error.message || "Ocurrió un error durante el proceso de registro.",
+      });
     } finally {
       setLoading(false);
     }
@@ -33,18 +70,33 @@ export default function Signup() {
   return (
     <>
       <StatusBar style="light" translucent backgroundColor="transparent" />
-
       <View style={{ flex: 1 }}>
         <AnimatedGradientBackground />
-
         <View style={styles.container}>
           <View style={styles.modalContainer}>
+            <TextInput
+              style={styles.input}
+              placeholder="Display Name"
+              placeholderTextColor="white"
+              value={displayName}
+              onChangeText={setDisplayName}
+            />
+
             <TextInput
               style={styles.input}
               placeholder="Email"
               placeholderTextColor="white"
               value={email}
               onChangeText={setEmail}
+              keyboardType="email-address"
+            />
+
+            <TextInput
+              style={styles.input}
+              placeholder="Confirmar Email"
+              placeholderTextColor="white"
+              value={confirmEmail}
+              onChangeText={setConfirmEmail}
               keyboardType="email-address"
             />
 
@@ -74,6 +126,7 @@ export default function Signup() {
           </View>
         </View>
       </View>
+      <Toast />
     </>
   );
 }

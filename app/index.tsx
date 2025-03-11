@@ -2,6 +2,7 @@ import { View, Text, Animated } from "react-native";
 import React, { useEffect, useRef } from "react";
 import { useRouter } from "expo-router";
 import { useFonts } from "expo-font";
+import { StatusBar } from "expo-status-bar";
 
 export default function Index() {
   const router = useRouter();
@@ -40,31 +41,34 @@ export default function Index() {
   }, []);
 
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "#343541",
-        gap: 20,
-      }}
-    >
-      {/* Usamos Animated.Image para aplicar la transformación */}
-      <Animated.Image
-        source={require("../assets/images/chat-icon.png")}
+    <>
+      <StatusBar style="light" translucent backgroundColor="transparent" />
+      <View
         style={{
-          transform: [{ rotate: spin }],
-        }}
-      />
-      <Text
-        style={{
-          color: "#FFFFFF",
-          fontSize: 42,
-          fontFamily: "RalewayBold",
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          backgroundColor: "#343541",
+          gap: 20,
         }}
       >
-        ChatGPT
-      </Text>
-    </View>
+        {/* Usamos Animated.Image para aplicar la transformación */}
+        <Animated.Image
+          source={require("../assets/images/chat-icon.png")}
+          style={{
+            transform: [{ rotate: spin }],
+          }}
+        />
+        <Text
+          style={{
+            color: "#FFFFFF",
+            fontSize: 42,
+            fontFamily: "RalewayBold",
+          }}
+        >
+          ChatGPT
+        </Text>
+      </View>
+    </>
   );
 }
