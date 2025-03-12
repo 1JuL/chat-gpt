@@ -41,7 +41,7 @@ export default function AnimatedGradientBackground() {
         end={{ x: 1, y: 1 }}
       />
 
-      <Animated.View style={[StyleSheet.absoluteFill, { opacity: 1 }]}>
+      <Animated.View style={[StyleSheet.absoluteFill, { opacity: 0.75 }]}>
         <LinearGradient
           colors={[nextColors[0], nextColors[1]]}
           style={StyleSheet.absoluteFill}

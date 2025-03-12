@@ -53,7 +53,7 @@ export default function Welcome() {
     if (currentExampleIndex < exampleSets.length - 1) {
       setCurrentExampleIndex(currentExampleIndex + 1);
     } else {
-      router.push("/dashboard");
+      router.replace("/dashboard");
     }
   };
 

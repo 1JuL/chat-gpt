@@ -8,7 +8,7 @@ export default function Index() {
   const router = useRouter();
 
   const changeScreen = () => {
-    router.push("/navbuttons");
+    router.replace("/dashboard");
   };
 
   const [loaded] = useFonts({

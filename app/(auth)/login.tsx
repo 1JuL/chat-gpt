@@ -21,7 +21,7 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
 
   const changeScreen = () => {
-    router.push("/welcome");
+    router.replace("/welcome");
   };
 
   const handleLogin = async () => {

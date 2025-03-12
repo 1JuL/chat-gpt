@@ -25,7 +25,7 @@ export default function Signup() {
   const router = useRouter();
 
   const changeScreen = () => {
-    router.push("/welcome");
+    router.replace("/welcome");
   };
 
   const handleSignup = async () => {
