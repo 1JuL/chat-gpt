@@ -4,7 +4,7 @@ export default StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#343541",
+    backgroundColor: "#202123",
     borderTopWidth: 1,
     borderColor: "#ccc",
   },
@@ -24,6 +24,7 @@ export default StyleSheet.create({
   botMessage: {
     alignSelf: "flex-start",
     backgroundColor: "rgba(255,255,255,0.2)",
+    paddingBottom: 25,
   },
   messageTime: {
     fontSize: 10,

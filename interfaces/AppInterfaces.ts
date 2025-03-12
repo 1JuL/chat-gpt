@@ -70,4 +70,5 @@ export interface DataContextType {
   getChat: (conversationId: string) => Promise<any>;
   addMessage: (conversationId: string, message: Message) => Promise<void>;
   getUserChats: (userId: string, setChats: (chats: any[]) => void) => () => void;
+  clearConversations: (userId: string) => Promise<void>;
 }

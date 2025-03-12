@@ -3,11 +3,13 @@ import { StyleSheet } from "react-native";
 export default StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#f5f5f5", // fondo claro general
   },
   topSection: {
     flex: 6,
     padding: 10,
-    backgroundColor: "#202123",
+    backgroundColor: "#ffffff", // fondo blanco para la sección superior
+    paddingTop: 50,
   },
   newChatButton: {
     flexDirection: "row",
@@ -15,7 +17,7 @@ export default StyleSheet.create({
     justifyContent: "space-between",
     paddingVertical: 12,
     borderBottomWidth: 1,
-    borderColor: "#ccc",
+    borderColor: "#ddd", // borde más claro
   },
   recentChatButton: {
     flexDirection: "row",
@@ -34,13 +36,13 @@ export default StyleSheet.create({
   newChatText: {
     marginLeft: 10,
     fontSize: 16,
-    color: "#fff",
+    color: "#333", // texto oscuro para contraste
     fontFamily: "Raleway",
   },
   recentChatText: {
     marginLeft: 10,
     fontSize: 16,
-    color: "#fff",
+    color: "#333",
     fontFamily: "Raleway",
   },
   iconRight: {
@@ -56,7 +58,7 @@ export default StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "rgba(0,0,0,0.1)",
+    backgroundColor: "rgba(0,0,0,0.05)", // overlay muy sutil
     zIndex: 1000,
   },
   /* Dropdown para editar y borrar */
@@ -64,11 +66,11 @@ export default StyleSheet.create({
     position: "absolute",
     top: 75,
     right: 40,
-    backgroundColor: "#343541",
+    backgroundColor: "#ffffff", // fondo blanco para el dropdown
     borderRadius: 5,
     padding: 10,
     zIndex: 1000,
-    shadowColor: "#000",
+    shadowColor: "#aaa",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
@@ -82,17 +84,17 @@ export default StyleSheet.create({
   dropdownText: {
     marginLeft: 10,
     fontSize: 16,
-    color: "#fff",
+    color: "#333", // texto oscuro
     fontFamily: "Raleway",
   },
   bottomSection: {
     width: "100%",
     height: 316,
     position: "absolute",
-    top: 450,
-    backgroundColor: "#202123",
+    top: 550,
+    backgroundColor: "#ffffff", // fondo blanco para sección inferior
     borderTopWidth: 1,
-    borderTopColor: "#ccc",
+    borderTopColor: "#ddd",
     paddingTop: 12,
     paddingRight: 20,
     paddingBottom: 12,
@@ -102,11 +104,12 @@ export default StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 10,
+    color: "#333",
   },
   button: {
     width: "100%",
     height: 52,
-    backgroundColor: "#303134",
+    backgroundColor: "#e0e0e0", // fondo gris claro
     padding: 15,
     marginVertical: 5,
     borderRadius: 5,
@@ -120,7 +123,7 @@ export default StyleSheet.create({
     marginRight: 10, // Espacio entre el ícono y el texto
   },
   buttonText: {
-    color: "#fff",
+    color: "#333", // texto oscuro
     fontSize: 16,
     fontFamily: "Raleway",
   },
@@ -132,7 +135,7 @@ export default StyleSheet.create({
   lastButton: {
     marginBottom: 0,
     width: "100%",
-    backgroundColor: "#303134",
+    backgroundColor: "#e0e0e0",
     padding: 15,
     marginVertical: 5,
     borderRadius: 5,
@@ -140,7 +143,7 @@ export default StyleSheet.create({
   },
   modalOverlay: {
     flex: 1,
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    backgroundColor: "rgba(0, 0, 0, 0.2)", // overlay un poco más suave
   },
   modalContainer: {
     position: "absolute",
@@ -150,7 +153,7 @@ export default StyleSheet.create({
     backgroundColor: "#fff",
     borderRadius: 10,
     padding: 20,
-    elevation: 5, // Sombra en Android
+    elevation: 5, // sombra en Android
   },
   modalTitle: {
     fontSize: 18,
@@ -161,7 +164,7 @@ export default StyleSheet.create({
   },
   modalInput: {
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: "#ddd",
     borderRadius: 5,
     padding: 10,
     marginBottom: 20,
@@ -174,5 +177,16 @@ export default StyleSheet.create({
   modalButtonText: {
     fontSize: 16,
     color: "#007BFF",
+  },
+  loadingContainer: {
+    position: "absolute",
+    zIndex: 10,
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(255,255,255,0.7)", // fondo claro y translúcido
   },
 });

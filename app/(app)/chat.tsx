@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Text,
@@ -12,34 +12,39 @@ import { useFonts } from "expo-font";
 import Markdown from "react-native-markdown-display";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { APIResponse, Message } from "@/interfaces/AppInterfaces";
-import styles from "../../styles/ChatStyles";
-import { collection, onSnapshot, orderBy, query, serverTimestamp } from "firebase/firestore";
+import darkStyles from "../../styles/ChatDarkStyles";
+import lightStyles from "../../styles/ChatLightStyles";
+import { collection, onSnapshot, orderBy, query } from "firebase/firestore";
 import { db } from "../../utils/firebase";
 import { useData } from "@/context/DataContext";
 import { useLocalSearchParams } from "expo-router";
 import { StatusBar } from "expo-status-bar";
+import { useTheme } from "@/context/ThemeContext";
 
 export default function Chat() {
-  const params = useLocalSearchParams();
-  const { chatId } = params;
-
   const [loaded] = useFonts({
     RalewayReg: require("../../assets/fonts/raleway.regular.ttf"),
   });
-  const [inputText, setInputText] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const params = useLocalSearchParams();
+  const { chatId } = params;
   const [conversationId, setConversationId] = useState<string | null>(
     chatId ? String(chatId) : null
   );
 
-  const { createChat, addMessage } = useData();
+  const { theme } = useTheme();
+  const styles = theme === "dark" ? darkStyles : lightStyles;
 
+  const [inputText, setInputText] = useState("");
+  const [initialLoad, setInitialLoad] = useState(false);
+  const [sending, setSending] = useState(false);
+  const [messages, setMessages] = useState<Message[]>([]);
+  const { createChat, addMessage } = useData();
+  const scrollViewRef = useRef<ScrollView>(null);
   const API_KEY = process.env.EXPO_PUBLIC_API_KEY;
 
   useEffect(() => {
     if (!conversationId) return;
-    setIsLoading(true);
+    setInitialLoad(true);
     const messagesRef = collection(db, "conversations", conversationId, "messages");
     const q = query(messagesRef, orderBy("timestamp", "asc"));
     const unsubscribe = onSnapshot(q, (snapshot) => {
@@ -52,15 +57,25 @@ export default function Chat() {
           state: data.state || "Sent",
         };
       });
-      setMessages(loadedMessages);
-      setIsLoading(false);
+      setMessages((prev) => {
+        if (loadedMessages.length === 0 && prev.length > 0) {
+          return prev;
+        }
+        return loadedMessages;
+      });
+      setInitialLoad(false);
     });
     return () => unsubscribe();
   }, [conversationId]);
 
+  useEffect(() => {
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollToEnd({ animated: true });
+    }
+  }, [messages]);
+
   const getResponse = async (userText: string): Promise<string> => {
     try {
-      setIsLoading(true);
       const response = await axios.post<APIResponse>(
         `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`,
         {
@@ -76,43 +91,39 @@ export default function Chat() {
     } catch (error) {
       console.log("Error:", error);
       return "Error en la respuesta del bot.";
-    } finally {
-      setIsLoading(false);
     }
   };
 
   const handleSend = async () => {
     if (!inputText.trim()) return;
-    setIsLoading(true);
+    setSending(true);
+    const messageText = inputText;
+    setInputText("");
 
     let currentConversationId = conversationId;
     if (!currentConversationId) {
       currentConversationId = Date.now().toString();
       try {
-        // Usa los primeros 20 caracteres del mensaje del usuario como título de la conversación
-        const chatTitle = inputText.length > 20 ? inputText.substring(0, 20) + "..." : inputText;
+        const chatTitle =
+          messageText.length > 20 ? messageText.substring(0, 20) + "..." : messageText;
         await createChat(currentConversationId, chatTitle, []);
         setConversationId(currentConversationId);
       } catch (error) {
         console.error("Error creando conversación:", error);
+        setSending(false);
         return;
       }
     }
 
-    // Crear el objeto del mensaje del usuario
     const userMessage: Message = {
-      text: inputText,
+      text: messageText,
       sender_by: "User",
       date: new Date(),
       state: "Sent",
     };
-
-    // Actualiza la UI agregando el mensaje del usuario
     setMessages((prev) => [...prev, userMessage]);
-    setInputText("");
 
-    // Obtener respuesta del bot
-    const botText = await getResponse(inputText);
+    const botText = await getResponse(messageText);
     const botMessage: Message = {
       text: botText,
       sender_by: "Bot",
@@ -120,18 +131,15 @@ export default function Chat() {
       state: "Received",
     };
 
-    // Actualiza la UI agregando el mensaje del bot
     setMessages((prev) => [...prev, botMessage]);
 
     try {
-      // Guarda ambos mensajes en la subcolección "messages" de la conversación
       await addMessage(currentConversationId, userMessage);
       await addMessage(currentConversationId, botMessage);
     } catch (error) {
       console.error("Error al guardar mensajes:", error);
-    } finally {
-      setIsLoading(false);
     }
+    setSending(false);
   };
 
   if (!loaded) return null;
@@ -140,7 +148,7 @@ export default function Chat() {
     <>
       <StatusBar style="light" translucent backgroundColor="transparent" />
       <View style={styles.container}>
-        <ScrollView style={styles.messagesContainer}>
+        <ScrollView ref={scrollViewRef} style={styles.messagesContainer}>
           {messages.map((msg, index) => (
             <View
               key={index}
@@ -149,11 +157,12 @@ export default function Chat() {
                 msg.sender_by === "User" ? styles.userMessage : styles.botMessage,
               ]}
             >
-              <Markdown style={markdownStyles}>{msg.text}</Markdown>
+              <Markdown style={theme === "dark" ? markdownStyles : {}}>{msg.text}</Markdown>
               <Text style={styles.messageTime}>{msg.date.toLocaleTimeString()}</Text>
             </View>
           ))}
-          {isLoading && (
+          {/* Spinner de carga*/}
+          {(sending || initialLoad) && (
             <ActivityIndicator size="large" color="#10A37F" style={styles.loadingIndicator} />
           )}
         </ScrollView>
@@ -162,16 +171,20 @@ export default function Chat() {
           <TextInput
             style={styles.input}
             placeholder="Ask Gemini ..."
-            placeholderTextColor="white"
+            placeholderTextColor={theme === "dark" ? "#fff" : "#000"}
             value={inputText}
             onChangeText={setInputText}
           />
-          <TouchableOpacity style={styles.sendButton} onPress={handleSend} disabled={isLoading}>
-            {isLoading ? (
-              <ActivityIndicator size="small" color="white" />
-            ) : (
-              <MaterialCommunityIcons name="send" size={24} color="white" />
-            )}
+          <TouchableOpacity
+            style={[styles.sendButton, sending && { opacity: 0.5 }]}
+            onPress={handleSend}
+            disabled={sending}
+          >
+            <MaterialCommunityIcons
+              name="send"
+              size={24}
+              color={theme === "dark" ? "#fff" : "#000"}
+            />
           </TouchableOpacity>
         </View>
       </View>

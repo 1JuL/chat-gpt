@@ -8,7 +8,7 @@ export default function AuthLayout() {
         headerShown: false,
       }}
     >
-      {/* Estas pantallas pueden ser: login, signup, etc. */}
+      <Stack.Screen name="home" />
       <Stack.Screen name="login" />
       <Stack.Screen name="signup" />
     </Stack>
