@@ -9,7 +9,7 @@ export function useProtectedRoute() {
   const segments = useSegments();
 
   useEffect(() => {
-    const inAuthGroup = segments[0] === "(auth)";
+    const inAuthGroup = segments[0] === "login" || segments[0] === "signup";
     if (!user && !inAuthGroup) {
       router.replace("/home");
     }
