@@ -61,7 +61,7 @@ export default function Index() {
             fontFamily: "RalewayBold",
           }}
         >
-          ChatGPT
+          Gemini-chat
         </Text>
       </View>
     </>

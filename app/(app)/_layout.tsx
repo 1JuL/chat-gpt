@@ -19,7 +19,7 @@ export default function AppLayout() {
             headerRight: () => (
               <Image
                 source={require("../../assets/images/chat-icon.png")}
-                style={{ width: 30, height: 30, marginRight: 10 }}
+                style={{ width: 40, height: 40, marginRight: 10 }}
               />
             ),
           }}
