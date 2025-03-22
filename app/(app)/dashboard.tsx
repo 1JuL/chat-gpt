@@ -257,7 +257,7 @@ export default function Dashboard() {
                     <MaterialCommunityIcons
                       name="square-edit-outline"
                       size={20}
-                      color="#fff"
+                      color={theme === "dark" ? "#fff" : "#000"}
                       style={styles.icon}
                     />
                     <Text style={styles.dropdownText}>Edit</Text>
